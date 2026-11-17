@@ -73,7 +73,7 @@ is now upstream ([#1203](https://github.com/valentderah/totk-pc-recomp/pull/1203
 
 ## Planned
 
-- AMD FSR with the game's dynamic resolution on
+- AMD FSR in Linux
 
 ## Installing
 
