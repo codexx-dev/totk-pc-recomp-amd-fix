@@ -73,7 +73,7 @@ is now upstream ([#1203](https://github.com/valentderah/totk-pc-recomp/pull/1203
 
 ## Planned
 
-- AMD FSR in Linux
+- AMD FSR on Linux
 
 ## Installing
 
