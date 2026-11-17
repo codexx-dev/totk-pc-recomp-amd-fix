@@ -86,8 +86,10 @@ static const char *const text_en[UI_TEXT_COUNT] = {
                                   "bars, or stretch them over the whole picture. Applies from the next movie.",
     [UI_MENU_MOVIE_ASPECT_KEEP] = "Black bars", [UI_MENU_MOVIE_ASPECT_STRETCH] = "Stretch",
     [UI_MENU_ANTIALIASING] = "Anti-aliasing",
-    [UI_MENU_ANTIALIASING_DESC] = "SMAA smooths jagged edges of the finished picture at the game resolution, before "
-                                  "scaling to the window. The HUD is smoothed too. Applies at once.",
+    [UI_MENU_ANTIALIASING_DESC] = "How the edges of the picture are smoothed. FXAA: the game's own, which blurs fine detail a "
+                                  "little; with DLAA on it is not needed. SMAA: smooths jagged edges of the finished picture at "
+                                  "the game resolution, before scaling to the window, the HUD too. Applies at once.",
+    [UI_MENU_ANTIALIASING_FXAA] = "FXAA (game)",
     [UI_MENU_ANTIALIASING_SMAA] = "SMAA", [UI_MENU_ANTIALIASING_OFF] = "Off",
     [UI_MENU_FOV] = "Field of view",
     [UI_MENU_FOV_DESC] = "How much of the world the camera shows, in percent of the game's own. Game versions 1.1.0 and 1.4.3.",
@@ -174,8 +176,6 @@ static const char *const text_en[UI_TEXT_COUNT] = {
                           "they replace the 3D render scale. Takes effect at once.",
     [UI_MENU_DLSS_DLAA] = "DLAA (native)", [UI_MENU_DLSS_QUALITY] = "Quality", [UI_MENU_DLSS_BALANCED] = "Balanced",
     [UI_MENU_DLSS_PERFORMANCE] = "Performance", [UI_MENU_DLSS_ULTRA] = "Ultra Performance",
-    [UI_MENU_FXAA] = "Game anti-aliasing (FXAA)",
-    [UI_MENU_FXAA_DESC] = "The game's own FXAA edge smoothing. It blurs fine detail a little; with DLAA on it is not needed.",
     [UI_MENU_REFLEX] = "NVIDIA Reflex Low Latency",
     [UI_MENU_REFLEX_DESC] = "Reduces system latency on NVIDIA GPUs using VK_NV_low_latency2. On + Boost keeps GPU clocks high in CPU-bound scenes.",
     [UI_MENU_REFLEX_OFF] = "Off",
@@ -631,8 +631,10 @@ static const char *const text_ru[UI_TEXT_COUNT] = {
                                   "растянуть их на всю картинку. Действует со следующего ролика.",
     [UI_MENU_MOVIE_ASPECT_KEEP] = "Чёрные полосы", [UI_MENU_MOVIE_ASPECT_STRETCH] = "Растянуть",
     [UI_MENU_ANTIALIASING] = "Сглаживание",
-    [UI_MENU_ANTIALIASING_DESC] = "SMAA сглаживает лесенки на готовой картинке в разрешении игры, до масштабирования "
-                                  "под окно. Интерфейс тоже сглаживается. Применяется сразу.",
+    [UI_MENU_ANTIALIASING_DESC] = "Как сглаживаются края картинки. FXAA: собственное сглаживание игры, слегка размывает мелкие "
+                                  "детали; с DLAA оно не нужно. SMAA: сглаживает лесенки на готовой картинке в разрешении игры, "
+                                  "до масштабирования под окно, интерфейс тоже. Применяется сразу.",
+    [UI_MENU_ANTIALIASING_FXAA] = "FXAA (игры)",
     [UI_MENU_ANTIALIASING_SMAA] = "SMAA", [UI_MENU_ANTIALIASING_OFF] = "Выключено",
     [UI_MENU_FOV] = "Поле зрения",
     [UI_MENU_FOV_DESC] = "Сколько мира показывает камера, в процентах от игрового. Для версий игры 1.1.0 и 1.4.3.",
@@ -720,8 +722,6 @@ static const char *const text_ru[UI_TEXT_COUNT] = {
                           "экономит время видеокарты; они заменяют масштаб 3D-отрисовки. Действует сразу.",
     [UI_MENU_DLSS_DLAA] = "DLAA (родное)", [UI_MENU_DLSS_QUALITY] = "Качество", [UI_MENU_DLSS_BALANCED] = "Баланс",
     [UI_MENU_DLSS_PERFORMANCE] = "Производительность", [UI_MENU_DLSS_ULTRA] = "Макс. производительность",
-    [UI_MENU_FXAA] = "Сглаживание игры (FXAA)",
-    [UI_MENU_FXAA_DESC] = "Собственное сглаживание FXAA. Слегка размывает мелкие детали; с DLAA оно не нужно.",
     [UI_MENU_REFLEX] = "NVIDIA Reflex Low Latency",
     [UI_MENU_REFLEX_DESC] = "Снижает задержку системы на видеокартах NVIDIA с помощью VK_NV_low_latency2. «Вкл + Ускорение» удерживает высокие частоты GPU при упоре в процессор.",
     [UI_MENU_REFLEX_OFF] = "Выкл",
@@ -1216,8 +1216,10 @@ static const char *const text_pt_br[UI_TEXT_COUNT] = {
                                   "barras pretas ou esticá-los sobre a imagem toda. Vale a partir do próximo vídeo.",
     [UI_MENU_MOVIE_ASPECT_KEEP] = "Barras pretas", [UI_MENU_MOVIE_ASPECT_STRETCH] = "Esticar",
     [UI_MENU_ANTIALIASING] = "Antisserrilhado",
-    [UI_MENU_ANTIALIASING_DESC] = "O SMAA suaviza as bordas serrilhadas da imagem pronta na resolução do jogo, antes de "
-                                  "escalar para a janela. O HUD também é suavizado. Vale na hora.",
+    [UI_MENU_ANTIALIASING_DESC] = "Como as bordas da imagem são suavizadas. FXAA: o do próprio jogo, que borra um pouco os "
+                                  "detalhes finos; com o DLAA ligado não é necessário. SMAA: suaviza as bordas serrilhadas da "
+                                  "imagem pronta na resolução do jogo, antes de escalar para a janela, o HUD também. Vale na hora.",
+    [UI_MENU_ANTIALIASING_FXAA] = "FXAA (jogo)",
     [UI_MENU_ANTIALIASING_SMAA] = "SMAA", [UI_MENU_ANTIALIASING_OFF] = "Desligado",
     [UI_MENU_SHARPNESS] = "Nitidez do FSR",
     [UI_MENU_SHARPNESS_DESC] = "Aumento de nitidez após a ampliação do FSR; 0 desliga.",
@@ -1669,9 +1671,6 @@ static const char *const text_pt_br[UI_TEXT_COUNT] = {
                                 "bordas um pouco menos suaves. Vale na hora.",
     [UI_MENU_DLSS_CHARS_OFF] = "Desligado", [UI_MENU_DLSS_CHARS_LIGHT] = "Leve", [UI_MENU_DLSS_CHARS_MEDIUM] = "Médio",
     [UI_MENU_DLSS_CHARS_FULL] = "Total",
-    [UI_MENU_FXAA] = "Antisserrilhado do jogo (FXAA)",
-    [UI_MENU_FXAA_DESC] = "A suavização de bordas FXAA do próprio jogo. Borra um pouco os detalhes finos; com o DLAA "
-                          "ligado não é necessária.",
     [UI_MENU_REFLEX] = "NVIDIA Reflex Low Latency",
     [UI_MENU_REFLEX_DESC] = "Reduz a latência do sistema em GPUs NVIDIA usando VK_NV_low_latency2. Ligado + Boost mantém os clocks da GPU altos quando limitado pela CPU.",
     [UI_MENU_REFLEX_OFF] = "Desligado",
@@ -1815,7 +1814,9 @@ static const char *const text_zh_hans[UI_TEXT_COUNT] = {
     [UI_MENU_MOVIE_ASPECT_KEEP] = "黑边",
     [UI_MENU_MOVIE_ASPECT_STRETCH] = "拉伸",
     [UI_MENU_ANTIALIASING] = "抗锯齿",
-    [UI_MENU_ANTIALIASING_DESC] = "SMAA 在游戏分辨率下平滑成品画面的锯齿边缘，然后再缩放到窗口。HUD 也会被平滑。立即生效。",
+    [UI_MENU_ANTIALIASING_DESC] = "画面边缘的平滑方式。FXAA：游戏自身的平滑，会让细节略微模糊；开启 DLAA 时不需要。"
+                                  "SMAA：在游戏分辨率下平滑成品画面的锯齿边缘，然后再缩放到窗口，HUD 也会被平滑。立即生效。",
+    [UI_MENU_ANTIALIASING_FXAA] = "FXAA（游戏）",
     [UI_MENU_ANTIALIASING_SMAA] = "SMAA", [UI_MENU_ANTIALIASING_OFF] = "关闭",
     [UI_MENU_FOV] = "视野",
     [UI_MENU_FOV_DESC] = "镜头能看到多大范围，以游戏自身视野的百分比表示。"
@@ -2343,8 +2344,6 @@ static const char *const text_zh_hans[UI_TEXT_COUNT] = {
                                 "这些边缘也略欠平滑。立即生效。",
     [UI_MENU_DLSS_CHARS_OFF] = "关", [UI_MENU_DLSS_CHARS_LIGHT] = "弱", [UI_MENU_DLSS_CHARS_MEDIUM] = "中",
     [UI_MENU_DLSS_CHARS_FULL] = "强",
-    [UI_MENU_FXAA] = "游戏抗锯齿（FXAA）",
-    [UI_MENU_FXAA_DESC] = "游戏自身的 FXAA 边缘平滑。会让细节略微模糊；开启 DLAA 时不需要。",
     [UI_MENU_REFLEX] = "NVIDIA Reflex 低延迟",
     [UI_MENU_REFLEX_DESC] = "在支持 VK_NV_low_latency2 的 NVIDIA 显卡上降低系统延迟。开 + 增强 (On + Boost) 会在 CPU 瓶颈时保持 GPU 高频率。",
     [UI_MENU_REFLEX_OFF] = "关",

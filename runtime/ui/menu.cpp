@@ -664,6 +664,23 @@ static const char *present_note(void) {
     return note;
 }
 
+// Anti-aliasing of the picture, one row over two settings: fxaa (the game's own FXAA pass, vk_dlaa.c
+// vk_dlaa_skip_draw) and antialiasing (SMAA on the present, vk_smaa.c). Off turns both off, FXAA is the game as
+// shipped, SMAA turns the game's FXAA off so the edges are not smoothed twice. A totk.ini with both on shows SMAA.
+static void row_antialiasing(void) {
+    static const UiTextId ids[] = {UI_MENU_ANTIALIASING_OFF, UI_MENU_ANTIALIASING_FXAA, UI_MENU_ANTIALIASING_SMAA};
+    const int n = 3;
+    int cur = !strcmp(cfg_value("TOTK_ANTIALIASING"), "smaa") ? 2 : cfg_bool("TOTK_FXAA") ? 1 : 0;
+    int step = opt_choice_step("TOTK_FXAA", UI_MENU_ANTIALIASING, menu_text(ids[cur]), cur == 1, UI_MENU_ANTIALIASING_DESC);
+    if (!step) return;
+    // A / click: the next value, round to the first; left / right stop at the ends (as opt_choice_list)
+    int nv = step == 2 ? (cur + 1) % n : cur + step < 0 ? 0 : cur + step >= n ? n - 1 : cur + step;
+    if (nv == cur) return;
+    cfg_set("TOTK_FXAA", nv == 1 ? "1" : "0");
+    cfg_set("TOTK_ANTIALIASING", nv == 2 ? "smaa" : "off");
+    opt_save_soon();
+}
+
 // ---- the tabs
 // Colour adjustment (vk_color.c): a profile writes the four values (STS78721's presets, issue #136); moving one of them
 // makes the profile Custom.
@@ -715,8 +732,6 @@ static void tab_screen(float scale) {
     opt_choice("TOTK_ASPECT", UI_MENU_ASPECT, aspect, 2, UI_MENU_ASPECT_DESC);
     static const UiTextId movie_aspect[] = {UI_MENU_MOVIE_ASPECT_KEEP, UI_MENU_MOVIE_ASPECT_STRETCH};
     opt_choice("TOTK_MOVIE_ASPECT", UI_MENU_MOVIE_ASPECT, movie_aspect, 2, UI_MENU_MOVIE_ASPECT_DESC);
-    static const UiTextId aa[] = {UI_MENU_ANTIALIASING_OFF, UI_MENU_ANTIALIASING_SMAA};
-    opt_choice("TOTK_ANTIALIASING", UI_MENU_ANTIALIASING, aa, 2, UI_MENU_ANTIALIASING_DESC);
     opt_slider("TOTK_FOV", UI_MENU_FOV, 70, 140, UI_MENU_FOV_DESC, 5, "%.0f %%");
     static const char *const aniso[] = {"game", "2", "4", "8", "16"};
     const char *aniso_names[] = {menu_text(UI_MENU_ANISO_GAME), "2x", "4x", "8x", "16x"};
@@ -738,7 +753,7 @@ static void tab_screen(float scale) {
     opt_choice("TOTK_DLSS_CHAR_MASK", UI_MENU_DLSS_CHARS, chars, 4, UI_MENU_DLSS_CHARS_DESC);
     static const UiTextId reflex[] = {UI_MENU_REFLEX_OFF, UI_MENU_REFLEX_ON, UI_MENU_REFLEX_BOOST};
     opt_choice("TOTK_REFLEX", UI_MENU_REFLEX, reflex, 3, UI_MENU_REFLEX_DESC);
-    opt_toggle("TOTK_FXAA", UI_MENU_FXAA, UI_MENU_FXAA_DESC);
+    row_antialiasing();
     rows_color();
     opt_group(UI_MENU_HDR_GROUP);
     opt_toggle("TOTK_HDR", UI_MENU_HDR, UI_MENU_HDR_DESC);
