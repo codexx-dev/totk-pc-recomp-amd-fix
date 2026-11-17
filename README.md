@@ -13,18 +13,31 @@ Early development. The game is playable on Windows and Linux; visual bugs and cr
 
 ## What this fork adds
 
-Changes on top of upstream TotK Recomp that are not in an upstream release yet:
+Changes on top of upstream TotK Recomp (its `dev` branch after the 0.4.1 release) that are not in an upstream release
+yet:
 
-- **SMAA anti-aliasing** (SMAA 1x) on the finished picture at the game resolution, on any GPU. Turn it on with
-  *Anti-aliasing* on the Screen tab of the menu (F1) or `antialiasing = smaa` in `totk.ini`; it is off by default and
-  a change applies at once. The HUD is smoothed too. Written by [ipavlin98](https://github.com/ipavlin98) (upstream
-  pull request [#624](https://github.com/valentderah/totk-pc-recomp/pull/624)) and carried onto the current `dev` by
+- **AMD FSR 4 as an upscaler**, in the same modes as DLSS: FSR 4 on Radeon RX 9000, 7000 and 6000 GPUs, FSR 3.1 on
+  other GPUs AMD's library supports (Windows). Pick *AMD FSR* under *Upscalers* on the Screen tab of the menu (F1);
+  the *DLSS mode* row sets the resolution it works from. Based on upstream pull request
+  [#876](https://github.com/valentderah/totk-pc-recomp/pull/876) by [VictorSCosta](https://github.com/VictorSCosta),
+  carried onto the current `dev`, with these changes:
+  - the picture stays equally sharp on every frame: FSR sharpens its own output (*FSR sharpness*, default 80 %) and
+    the game's FXAA pass, which the game ran only on some frames with FSR on, is left out;
+  - the game's dynamic resolution is held at 100 % while FSR is on, so FSR always gets the scene size it started with;
+  - the clouds and mist no longer flicker, thanks to upstream's fixes for DLSS, which FSR now shares;
+  - the setup downloads AMD's signed FSR libraries; the box is ticked by default with an AMD GPU and can be ticked
+    for any other (thanks to [CatDogFishFrog](https://github.com/CatDogFishFrog)).
+- **SMAA anti-aliasing** (SMAA 1x) on the finished picture at the game resolution, on any GPU. The *Anti-aliasing*
+  row of the menu chooses between Off, the game's FXAA (the default) and SMAA, and applies at once; SMAA turns the
+  game's FXAA off, and the HUD is smoothed too. Written by [ipavlin98](https://github.com/ipavlin98) (upstream pull
+  request [#624](https://github.com/valentderah/totk-pc-recomp/pull/624)) and carried onto `dev` by
   [itaskaev2](https://github.com/itaskaev2) in [#915](https://github.com/valentderah/totk-pc-recomp/pull/915).
-- **No light fringe around silhouettes against clouds on AMD's Windows drivers** (upstream issue
-  [#164](https://github.com/valentderah/totk-pc-recomp/issues/164)). The game's cloud shader discards a fragment and
-  then reads a texture level of detail; AMD's driver left that undefined for the neighbouring pixels, which lost their
-  fog. A discard now keeps the fragment running as a helper, as it does on the Switch. On by default on AMD's own
-  drivers; other drivers are unchanged. The environment variable `TOTK_DEMOTE=0` or `1` overrides it on any driver.
+- **One row per choice in the menu**: *Upscalers* (Off, NVIDIA DLSS, AMD FSR) replaces the DLSS on/off switch and
+  the separate backend row, and *Character trails* applies to both upscalers. `totk.ini` keeps its keys (`dlaa`,
+  `dlaa_backend`, `fxaa`, `antialiasing`), so older settings files still work.
+
+The fix for the light fringe around silhouettes against clouds on AMD's Windows drivers that this fork carried before
+is now upstream ([#1203](https://github.com/valentderah/totk-pc-recomp/pull/1203), in 0.4.1).
 
 ## Features
 
@@ -33,13 +46,14 @@ Changes on top of upstream TotK Recomp that are not in an upstream release yet:
 - Takes NSP and XCI game files, and compressed NSZ and XCZ as they are: the setup unpacks them itself
 - 60 fps by default; up to 144 fps or the monitor's refresh rate (experimental)
 - Custom resolutions (1080p, 2k...), supersampling and AMD FSR 1 upscaling
-- SMAA anti-aliasing on any GPU, off by default
+- Anti-aliasing: the game's FXAA or SMAA, on any GPU
 - NVIDIA DLSS / DLAA on RTX GPUs: the setup downloads `nvngx_dlss.dll` from NVIDIA's DLSS SDK repository
   (github.com/NVIDIA/DLSS, NVIDIA RTX SDK license) when it finds an RTX GPU; untick it in the setup to skip it
 - AMD FSR 4 on supported Radeon RX 9000, 7000 and 6000 GPUs (FSR 3.1 on other GPUs supported by the SDK), in the same
   modes as DLSS: on Windows, the setup downloads AMD's signed FSR SDK libraries
   (github.com/GPUOpen-LibrariesAndSDKs/FidelityFX-SDK, AMD FSR SDK license), ticked by default with an AMD GPU; the SDK
-  determines which GPU devices and upscaler versions it supports
+  determines which GPU devices and upscaler versions it supports. DLSS and FSR are chosen in one *Upscalers* row of
+  the menu
 - HDR10 output with peak, game and HUD brightness settings
 - 16:10 (Steam Deck, handhelds), 3:2 (Surface, Framework), 21:9 and 32:9 (ultrawide) game resolutions, with the camera and the interface in that shape
 - Anisotropic texture filtering up to 16x, for sharp ground into the distance
@@ -59,7 +73,7 @@ Changes on top of upstream TotK Recomp that are not in an upstream release yet:
 
 ## Planned
 
-- FSR4
+- AMD FSR with the game's dynamic resolution on
 
 ## Installing
 
@@ -98,7 +112,7 @@ TotK Recomp builds on the projects below. What was taken from each, with its lic
 - [Ryujinx](https://github.com/Ryujinx/Ryujinx)
 - [deko3d](https://github.com/devkitPro/deko3d)
 - [hactool](https://github.com/SciresM/hactool)
-- [SDL 3](https://libsdl.org), [Dear ImGui](https://github.com/ocornut/imgui), [AMD FSR 1](https://github.com/GPUOpen-Effects/FidelityFX-FSR), [SMAA](https://github.com/iryoku/smaa), [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator), [libopus](https://opus-codec.org), [libvpx](https://chromium.googlesource.com/webm/libvpx), [Zstandard](https://github.com/facebook/zstd)
+- [SDL 3](https://libsdl.org), [Dear ImGui](https://github.com/ocornut/imgui), [AMD FSR 1](https://github.com/GPUOpen-Effects/FidelityFX-FSR), [AMD FSR SDK](https://github.com/GPUOpen-LibrariesAndSDKs/FidelityFX-SDK) (FSR 3.1 and 4, downloaded by the setup), [SMAA](https://github.com/iryoku/smaa), [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator), [libopus](https://opus-codec.org), [libvpx](https://chromium.googlesource.com/webm/libvpx), [Zstandard](https://github.com/facebook/zstd)
 - [Switchbrew](https://switchbrew.org) and the Switch homebrew community
 
 ## License
