@@ -72,7 +72,7 @@ static const char *const text_en[UI_TEXT_COUNT] = {
                                   "that size. Above 100 % smooths jagged edges (supersampling) at a high GPU cost.",
     [UI_MENU_RENDER_SCALE_GAME] = "Game (83 %)",
     [UI_MENU_DYNAMIC_RES] = "Dynamic resolution",
-    [UI_MENU_DYNAMIC_RES_DESC] = "Lets the game lower the 3D scene to 90 or 80 %. It judges by an estimate made for the Switch that ignores your GPU, so wide scenes drop even on a fast PC. Off keeps the render scale.",
+    [UI_MENU_DYNAMIC_RES_DESC] = "Lets the game lower the 3D scene to 90 or 80 %. It judges by an estimate made for the Switch that ignores your GPU, so wide scenes drop even on a fast PC. Off keeps the render scale. Off while AMD FSR is on.",
     [UI_MENU_UPSCALER] = "Scaling to the window",
     [UI_MENU_UPSCALER_DESC] = "How the picture is scaled when the window is larger than the game resolution. FSR keeps "
                               "edges and detail sharper than bilinear.",
@@ -103,7 +103,8 @@ static const char *const text_en[UI_TEXT_COUNT] = {
     [UI_MENU_LOD_STEADY] = "Steady detail under load",
     [UI_MENU_LOD_STEADY_DESC] = "Skips the game's setup for lowering model and texture detail when the frame rate drops, as the emulator mod Disable LOD Quality Reduction does. Game versions 1.2.1 and 1.4.3. Leave it off on weak PCs: there this drop keeps the frame rate up.",
     [UI_MENU_SHARPNESS] = "FSR sharpness",
-    [UI_MENU_SHARPNESS_DESC] = "Sharpening after FSR scaling; 0 turns it off.",
+    [UI_MENU_SHARPNESS_DESC] = "How much AMD FSR sharpens: the 3D scene with the AMD FSR upscaler, and the picture FSR 1 scales to "
+                               "the window. 0 turns it off.",
     [UI_MENU_COLOR] = "Colour",
     [UI_MENU_COLOR_PRESET] = "Colour profile",
     [UI_MENU_COLOR_PRESET_DESC] = "Sets the four values below. Vivid: more contrast and saturation, shadows opened a "
@@ -151,10 +152,16 @@ static const char *const text_en[UI_TEXT_COUNT] = {
     [UI_MENU_GRASS_RANGE_DESC] = "How far around the camera grass grows (the game's: 62.5 m). Higher keeps the "
                                  "grass in meadows further out instead of growing it in just in front of you; lower "
                                  "draws less of it. Takes effect at the next start.",
-    [UI_MENU_DLAA] = "NVIDIA DLSS / DLAA",
-    [UI_MENU_DLAA_DESC] = "NVIDIA DLSS for the 3D scene (NVIDIA RTX GPUs; " DLSS_FILE " next to " EXE_FILE "): smoother "
-                          "edges and less shimmer. The HUD is not touched. The mode below sets the resolution it works "
-                          "from. Takes effect after a restart.",
+    [UI_MENU_DLAA] = "Upscalers",
+    [UI_MENU_DLAA_DESC] = "What smooths and scales the 3D scene. NVIDIA DLSS: NVIDIA RTX GPUs, " DLSS_FILE " next to " EXE_FILE
+                          ". AMD FSR: FSR 4 on AMD Radeon RX 9000, 7000 and 6000, FSR 3.1 on other GPUs "
+                          "AMD's library supports "
+                          "(Windows; amd_fidelityfx_loader_vk.dll and amd_fidelityfx_upscaler_vk.dll next to " EXE_FILE
+                          "); with it the game's FXAA and its dynamic resolution are off. Smoother edges and less "
+                          "shimmer; the HUD is not touched. The mode below sets the resolution it works from. Takes "
+                          "effect after a restart.",
+    [UI_MENU_DLAA_OFF] = "Off",
+    [UI_MENU_DLAA_BACKEND_DLSS] = "NVIDIA DLSS", [UI_MENU_DLAA_BACKEND_FSR] = "AMD FSR",
     [UI_MENU_DLSS_PRESET] = "DLSS model",
     [UI_MENU_DLSS_PRESET_DESC] = "Which DLSS model runs. Automatic follows NVIDIA's advice per mode: K for DLAA, Quality "
                                  "and Balanced, M for Performance, L for Ultra Performance. J: slightly less ghosting "
@@ -162,8 +169,8 @@ static const char *const text_en[UI_TEXT_COUNT] = {
                                  "Applies at once.",
     [UI_MENU_DLSS_PRESET_DEFAULT] = "Automatic", [UI_MENU_DLSS_PRESET_K] = "K (sharpest)",
     [UI_MENU_DLSS_PRESET_J] = "J (less ghosting)",
-    [UI_MENU_DLSS_CHARS] = "DLSS character trails",
-    [UI_MENU_DLSS_CHARS_DESC] = "Reduces the faint trails behind moving characters, animals and what they hold: DLSS takes "
+    [UI_MENU_DLSS_CHARS] = "Character trails",
+    [UI_MENU_DLSS_CHARS_DESC] = "Reduces the faint trails behind moving characters, animals and what they hold: the upscaler (DLSS or FSR) takes "
                                 "less of the previous frames there. Stronger removes more of the trails and leaves those "
                                 "edges a little less smooth. Applies at once.",
     [UI_MENU_DLSS_CHARS_OFF] = "Off", [UI_MENU_DLSS_CHARS_LIGHT] = "Light", [UI_MENU_DLSS_CHARS_MEDIUM] = "Medium",
@@ -175,7 +182,7 @@ static const char *const text_en[UI_TEXT_COUNT] = {
     [UI_MENU_DLSS_DLAA] = "DLAA (native)", [UI_MENU_DLSS_QUALITY] = "Quality", [UI_MENU_DLSS_BALANCED] = "Balanced",
     [UI_MENU_DLSS_PERFORMANCE] = "Performance", [UI_MENU_DLSS_ULTRA] = "Ultra Performance",
     [UI_MENU_FXAA] = "Game anti-aliasing (FXAA)",
-    [UI_MENU_FXAA_DESC] = "The game's own FXAA edge smoothing. It blurs fine detail a little; with DLAA on it is not needed.",
+    [UI_MENU_FXAA_DESC] = "The game's own FXAA edge smoothing. It blurs fine detail a little; with DLAA on it is not needed. Off while AMD FSR is on.",
     [UI_MENU_REFLEX] = "NVIDIA Reflex Low Latency",
     [UI_MENU_REFLEX_DESC] = "Reduces system latency on NVIDIA GPUs using VK_NV_low_latency2. On + Boost keeps GPU clocks high in CPU-bound scenes.",
     [UI_MENU_REFLEX_OFF] = "Off",
@@ -262,6 +269,16 @@ static const char *const text_en[UI_TEXT_COUNT] = {
     [UI_MENU_AUDIO_DEVICE_DEFAULT] = "System default",
 
     [UI_MENU_MOTION] = "Motion controls", [UI_MENU_MOTION_DESC] = "Aiming with the controller's gyroscope.",
+    [UI_MENU_GYRO_CALIBRATION] = "Gyro bias calibration",
+    [UI_MENU_GYRO_CALIBRATION_DESC] = "Subtracts the controller's resting drift, measured with the calibrate row "
+                                      "below. The measured values stay saved when this is off.",
+    [UI_MENU_GYRO_CALIBRATE] = "Calibrate gyro",
+    [UI_MENU_GYRO_CALIBRATE_DESC] = "Measures the gyroscope's resting drift and removes it. Put the controller down or "
+                                    "hold it still for two seconds.",
+    [UI_MENU_GYRO_CALIBRATE_WAIT] = "Calibrating...",
+    [UI_MENU_GYRO_CALIBRATED] = "%s, calibrated",
+    [UI_MENU_GYRO_CALIBRATE_FAILED] = "Calibration failed",
+    [UI_MENU_GYRO_CALIBRATE_MOVED] = "Controller moved: hold it still and try again",
     [UI_MENU_RUMBLE_STRENGTH] = "Vibration strength",
     [UI_MENU_RUMBLE_STRENGTH_DESC] = "How strong the controller vibrates.",
     [UI_MENU_RUMBLE_CURVE] = "Vibration curve",
@@ -541,7 +558,7 @@ static const char *const text_en[UI_TEXT_COUNT] = {
     [UI_MENU_OV_FMT_MHZ] = "%.0f MHz", [UI_MENU_OV_FMT_GB] = "%.1f GB", [UI_MENU_OV_FMT_GB_OF] = "/ %.1f GB",
     [UI_MENU_OV_GAME_GB] = "game %.1f GB", [UI_MENU_OV_FMT_MS] = "%.2f ms", [UI_MENU_OV_PER_FRAME] = "%.1f per frame",
     [UI_MENU_OV_WINDOW] = "Window", [UI_MENU_OV_OUTPUT] = "Game image", [UI_MENU_OV_SCENE] = "3D scene",
-    [UI_MENU_OV_SCALING] = "Scaling", [UI_MENU_OV_LIMIT] = "Frame limit", [UI_MENU_OV_PRESENT] = "Presentation",
+    [UI_MENU_OV_UPSCALER] = "Upscaler", [UI_MENU_OV_SCALING] = "Scaling", [UI_MENU_OV_LIMIT] = "Frame limit", [UI_MENU_OV_PRESENT] = "Presentation",
     [UI_MENU_OV_FMT_SIZE] = "%ux%u", [UI_MENU_OV_FMT_SCENE] = "%ux%u, %.0f%%",
     [UI_MENU_OV_FMT_FSR] = "AMD FSR 1, sharpness %d%%", [UI_MENU_OV_SCALE_NONE] = "none (1:1)",
     [UI_MENU_OV_SCALE_BILINEAR] = "bilinear",
@@ -617,7 +634,7 @@ static const char *const text_ru[UI_TEXT_COUNT] = {
                                   "Выше 100 % сглаживает лесенки на краях (суперсэмплинг) ценой большой нагрузки на GPU.",
     [UI_MENU_RENDER_SCALE_GAME] = "Как в игре (83 %)",
     [UI_MENU_DYNAMIC_RES] = "Динамическое разрешение",
-    [UI_MENU_DYNAMIC_RES_DESC] = "Игра снижает 3D-сцену до 90 или 80 %. Она судит по оценке для Switch, не учитывающей вашу видеокарту, поэтому широкие сцены снижаются даже на быстром ПК. Выключено: остаётся масштаб отрисовки.",
+    [UI_MENU_DYNAMIC_RES_DESC] = "Игра снижает 3D-сцену до 90 или 80 %. Она судит по оценке для Switch, не учитывающей вашу видеокарту, поэтому широкие сцены снижаются даже на быстром ПК. Выключено: остаётся масштаб отрисовки. Отключено при включённом AMD FSR.",
     [UI_MENU_UPSCALER] = "Масштабирование под окно",
     [UI_MENU_UPSCALER_DESC] = "Как картинка растягивается, когда окно больше разрешения игры. FSR сохраняет края и "
                               "детали чётче билинейного.",
@@ -648,7 +665,8 @@ static const char *const text_ru[UI_TEXT_COUNT] = {
     [UI_MENU_LOD_STEADY] = "Стабильная детализация под нагрузкой",
     [UI_MENU_LOD_STEADY_DESC] = "Пропускает настройку игры, снижающую детализацию моделей и текстур при падении частоты кадров, как эмуляторный мод Disable LOD Quality Reduction. Только для версий игры 1.2.1 и 1.4.3. На слабых ПК не включайте: там это снижение и держит частоту кадров.",
     [UI_MENU_SHARPNESS] = "Резкость FSR",
-    [UI_MENU_SHARPNESS_DESC] = "Повышение резкости после масштабирования FSR; 0 выключает его.",
+    [UI_MENU_SHARPNESS_DESC] = "Насколько AMD FSR повышает резкость: 3D-сцены при апскейлере AMD FSR и картинки, которую "
+                               "FSR 1 растягивает под окно. 0 выключает.",
     [UI_MENU_COLOR] = "Цвет",
     [UI_MENU_COLOR_PRESET] = "Цветовой профиль",
     [UI_MENU_COLOR_PRESET_DESC] = "Задаёт четыре значения ниже. «Яркий»: больше контраста и насыщенности, тени немного "
@@ -697,10 +715,16 @@ static const char *const text_ru[UI_TEXT_COUNT] = {
     [UI_MENU_GRASS_RANGE_DESC] = "Как далеко вокруг камеры растёт трава (в игре 62,5 м). Выше: трава на лугах видна "
                                  "дальше и не вырастает прямо перед вами; ниже: травы меньше. Действует после "
                                  "перезапуска.",
-    [UI_MENU_DLAA] = "NVIDIA DLSS / DLAA",
-    [UI_MENU_DLAA_DESC] = "NVIDIA DLSS для 3D-сцены (видеокарты NVIDIA RTX; " DLSS_FILE " рядом с " EXE_FILE "): ровнее "
-                          "края и меньше мерцания. Интерфейс не затрагивается. Режим ниже задаёт разрешение, с которым он "
-                          "работает. Действует после перезапуска.",
+    [UI_MENU_DLAA] = "Апскейлеры",
+    [UI_MENU_DLAA_DESC] = "Что сглаживает и масштабирует 3D-сцену. NVIDIA DLSS: видеокарты NVIDIA RTX, " DLSS_FILE " рядом с "
+                          EXE_FILE ". AMD FSR: FSR 4 на AMD Radeon RX 9000, 7000 и 6000, FSR 3.1 на других видеокартах, "
+                          "которые поддерживает библиотека AMD (Windows; amd_fidelityfx_loader_vk.dll и "
+                          "amd_fidelityfx_upscaler_vk.dll рядом с "
+                          EXE_FILE "); с ним FXAA игры и её динамическое разрешение выключены. Ровнее края и меньше "
+                          "мерцания; интерфейс не затрагивается. Режим ниже задаёт разрешение, с которым он работает. "
+                          "Действует после перезапуска.",
+    [UI_MENU_DLAA_OFF] = "Выкл.",
+    [UI_MENU_DLAA_BACKEND_DLSS] = "NVIDIA DLSS", [UI_MENU_DLAA_BACKEND_FSR] = "AMD FSR",
     [UI_MENU_DLSS_PRESET] = "Модель DLSS",
     [UI_MENU_DLSS_PRESET_DESC] = "Какая модель DLSS работает. «Автоматически» следует совету NVIDIA для каждого режима: K "
                                  "для DLAA, «Качества» и «Баланса», M для «Производительности», L для «Макс. "
@@ -708,8 +732,8 @@ static const char *const text_ru[UI_TEXT_COUNT] = {
                                  "мерцания. K: самая чёткая модель во всех режимах. Действует сразу.",
     [UI_MENU_DLSS_PRESET_DEFAULT] = "Автоматически", [UI_MENU_DLSS_PRESET_K] = "K (самая чёткая)",
     [UI_MENU_DLSS_PRESET_J] = "J (меньше шлейфов)",
-    [UI_MENU_DLSS_CHARS] = "Шлейфы персонажей в DLSS",
-    [UI_MENU_DLSS_CHARS_DESC] = "Убирает слабые шлейфы за движущимися персонажами, животными и тем, что они держат: DLSS "
+    [UI_MENU_DLSS_CHARS] = "Шлейфы персонажей",
+    [UI_MENU_DLSS_CHARS_DESC] = "Убирает слабые шлейфы за движущимися персонажами, животными и тем, что они держат: апскейлер (DLSS или FSR) "
                                 "берёт там меньше от прошлых кадров. Чем сильнее, тем меньше шлейфов и тем чуть менее "
                                 "гладкие края. Действует сразу.",
     [UI_MENU_DLSS_CHARS_OFF] = "Выкл.", [UI_MENU_DLSS_CHARS_LIGHT] = "Слабо", [UI_MENU_DLSS_CHARS_MEDIUM] = "Средне",
@@ -721,7 +745,7 @@ static const char *const text_ru[UI_TEXT_COUNT] = {
     [UI_MENU_DLSS_DLAA] = "DLAA (родное)", [UI_MENU_DLSS_QUALITY] = "Качество", [UI_MENU_DLSS_BALANCED] = "Баланс",
     [UI_MENU_DLSS_PERFORMANCE] = "Производительность", [UI_MENU_DLSS_ULTRA] = "Макс. производительность",
     [UI_MENU_FXAA] = "Сглаживание игры (FXAA)",
-    [UI_MENU_FXAA_DESC] = "Собственное сглаживание FXAA. Слегка размывает мелкие детали; с DLAA оно не нужно.",
+    [UI_MENU_FXAA_DESC] = "Собственное сглаживание FXAA. Слегка размывает мелкие детали; с DLAA оно не нужно. Выключено, пока работает AMD FSR.",
     [UI_MENU_REFLEX] = "NVIDIA Reflex Low Latency",
     [UI_MENU_REFLEX_DESC] = "Снижает задержку системы на видеокартах NVIDIA с помощью VK_NV_low_latency2. «Вкл + Ускорение» удерживает высокие частоты GPU при упоре в процессор.",
     [UI_MENU_REFLEX_OFF] = "Выкл",
@@ -805,6 +829,16 @@ static const char *const text_ru[UI_TEXT_COUNT] = {
     [UI_MENU_AUDIO_DEVICE_DEFAULT] = "Системное по умолчанию",
 
     [UI_MENU_MOTION] = "Управление движением", [UI_MENU_MOTION_DESC] = "Прицеливание гироскопом контроллера.",
+    [UI_MENU_GYRO_CALIBRATION] = "Калибровка смещения гироскопа",
+    [UI_MENU_GYRO_CALIBRATION_DESC] = "Убирает покоящееся смещение контроллера, измеренное строкой калибровки ниже. "
+                                      "Измеренные значения сохраняются и при выключенном состоянии.",
+    [UI_MENU_GYRO_CALIBRATE] = "Калибровка гироскопа",
+    [UI_MENU_GYRO_CALIBRATE_DESC] = "Измеряет смещение гироскопа в покое и убирает его. Положите контроллер или "
+                                    "держите его неподвижно две секунды.",
+    [UI_MENU_GYRO_CALIBRATE_WAIT] = "Калибровка...",
+    [UI_MENU_GYRO_CALIBRATED] = "%s, откалиброван",
+    [UI_MENU_GYRO_CALIBRATE_FAILED] = "Калибровка не удалась",
+    [UI_MENU_GYRO_CALIBRATE_MOVED] = "Контроллер сдвинулся: держите его неподвижно и повторите",
     [UI_MENU_RUMBLE_STRENGTH] = "Сила вибрации",
     [UI_MENU_RUMBLE_STRENGTH_DESC] = "Насколько сильно вибрирует контроллер.",
     [UI_MENU_RUMBLE_CURVE] = "Кривая вибрации",
@@ -1090,7 +1124,7 @@ static const char *const text_ru[UI_TEXT_COUNT] = {
     [UI_MENU_OV_FMT_MHZ] = "%.0f МГц", [UI_MENU_OV_FMT_GB] = "%.1f ГБ", [UI_MENU_OV_FMT_GB_OF] = "/ %.1f ГБ",
     [UI_MENU_OV_GAME_GB] = "игра %.1f ГБ", [UI_MENU_OV_FMT_MS] = "%.2f мс", [UI_MENU_OV_PER_FRAME] = "%.1f за кадр",
     [UI_MENU_OV_WINDOW] = "Окно", [UI_MENU_OV_OUTPUT] = "Изображение игры", [UI_MENU_OV_SCENE] = "3D-сцена",
-    [UI_MENU_OV_SCALING] = "Масштабирование", [UI_MENU_OV_LIMIT] = "Лимит кадров", [UI_MENU_OV_PRESENT] = "Вывод кадров",
+    [UI_MENU_OV_UPSCALER] = "Апскейлер", [UI_MENU_OV_SCALING] = "Масштабирование", [UI_MENU_OV_LIMIT] = "Лимит кадров", [UI_MENU_OV_PRESENT] = "Вывод кадров",
     [UI_MENU_OV_FMT_SIZE] = "%ux%u", [UI_MENU_OV_FMT_SCENE] = "%ux%u, %.0f%%",
     [UI_MENU_OV_FMT_FSR] = "AMD FSR 1, резкость %d%%", [UI_MENU_OV_SCALE_NONE] = "нет (1:1)",
     [UI_MENU_OV_SCALE_BILINEAR] = "билинейное",
@@ -1202,7 +1236,7 @@ static const char *const text_pt_br[UI_TEXT_COUNT] = {
                                   "GPU.",
     [UI_MENU_RENDER_SCALE_GAME] = "Jogo (83 %)",
     [UI_MENU_DYNAMIC_RES] = "Resolução dinâmica",
-    [UI_MENU_DYNAMIC_RES_DESC] = "Deixa o jogo reduzir a cena 3D para 90 ou 80 %. Ele decide por uma estimativa feita para o Switch que ignora sua GPU, então cenas largas caem mesmo num PC rápido. Desligada, mantém a escala da renderização.",
+    [UI_MENU_DYNAMIC_RES_DESC] = "Deixa o jogo reduzir a cena 3D para 90 ou 80 %. Ele decide por uma estimativa feita para o Switch que ignora sua GPU, então cenas largas caem mesmo num PC rápido. Desligada, mantém a escala da renderização. Desligado quando o FSR estiver Ligado.",
     [UI_MENU_UPSCALER] = "Escala para a janela",
     [UI_MENU_UPSCALER_DESC] = "Como a imagem é ampliada quando a janela é maior que a resolução do jogo. O FSR mantém "
                               "bordas e detalhes mais nítidos que o bilinear.",
@@ -1220,7 +1254,8 @@ static const char *const text_pt_br[UI_TEXT_COUNT] = {
                                   "escalar para a janela. O HUD também é suavizado. Vale na hora.",
     [UI_MENU_ANTIALIASING_SMAA] = "SMAA", [UI_MENU_ANTIALIASING_OFF] = "Desligado",
     [UI_MENU_SHARPNESS] = "Nitidez do FSR",
-    [UI_MENU_SHARPNESS_DESC] = "Aumento de nitidez após a ampliação do FSR; 0 desliga.",
+    [UI_MENU_SHARPNESS_DESC] = "Quanto o AMD FSR realça a nitidez: da cena 3D com o upscaler AMD FSR e da imagem que o FSR 1 "
+                               "amplia para a janela. 0 desliga.",
 
     [UI_MENU_FPS_LIMIT] = "Limite de quadros",
     [UI_MENU_FPS_LIMIT_DESC] = "O máximo de quadros por segundo que o jogo desenha. Acima de 60 é experimental e "
@@ -1265,6 +1300,16 @@ static const char *const text_pt_br[UI_TEXT_COUNT] = {
     [UI_MENU_AUDIO_DEVICE_DEFAULT] = "Padrão do sistema",
 
     [UI_MENU_MOTION] = "Controles de movimento", [UI_MENU_MOTION_DESC] = "Mirar com o giroscópio do controle.",
+    [UI_MENU_GYRO_CALIBRATION] = "Calibração do desvio do giroscópio",
+    [UI_MENU_GYRO_CALIBRATION_DESC] = "Remove o desvio de repouso do controle, medido pela linha de calibração "
+                                      "abaixo. Os valores medidos ficam salvos mesmo com isto desligado.",
+    [UI_MENU_GYRO_CALIBRATE] = "Calibrar giroscópio",
+    [UI_MENU_GYRO_CALIBRATE_DESC] = "Mede o desvio de repouso do giroscópio e o remove. Apoie o controle ou "
+                                    "segure-o parado por dois segundos.",
+    [UI_MENU_GYRO_CALIBRATE_WAIT] = "Calibrando...",
+    [UI_MENU_GYRO_CALIBRATED] = "%s, calibrado",
+    [UI_MENU_GYRO_CALIBRATE_FAILED] = "Falha na calibração",
+    [UI_MENU_GYRO_CALIBRATE_MOVED] = "O controle se moveu: segure-o parado e tente de novo",
     [UI_MENU_RUMBLE_STRENGTH] = "Intensidade da vibração",
     [UI_MENU_RUMBLE_STRENGTH_DESC] = "Quão forte o controle vibra.",
     [UI_MENU_RUMBLE_CURVE] = "Curva da vibração",
@@ -1487,7 +1532,7 @@ static const char *const text_pt_br[UI_TEXT_COUNT] = {
     [UI_MENU_OV_FMT_MHZ] = "%.0f MHz", [UI_MENU_OV_FMT_GB] = "%.1f GB", [UI_MENU_OV_FMT_GB_OF] = "/ %.1f GB",
     [UI_MENU_OV_GAME_GB] = "jogo %.1f GB", [UI_MENU_OV_FMT_MS] = "%.2f ms", [UI_MENU_OV_PER_FRAME] = "%.1f por quadro",
     [UI_MENU_OV_WINDOW] = "Janela", [UI_MENU_OV_OUTPUT] = "Imagem do jogo", [UI_MENU_OV_SCENE] = "Cena 3D",
-    [UI_MENU_OV_SCALING] = "Escala", [UI_MENU_OV_LIMIT] = "Limite de quadros", [UI_MENU_OV_PRESENT] = "Apresentação",
+    [UI_MENU_OV_UPSCALER] = "Upscaler", [UI_MENU_OV_SCALING] = "Escala", [UI_MENU_OV_LIMIT] = "Limite de quadros", [UI_MENU_OV_PRESENT] = "Apresentação",
     [UI_MENU_OV_FMT_SIZE] = "%ux%u", [UI_MENU_OV_FMT_SCENE] = "%ux%u, %.0f%%",
     [UI_MENU_OV_FMT_FSR] = "AMD FSR 1, nitidez %d%%", [UI_MENU_OV_SCALE_NONE] = "nenhuma (1:1)",
     [UI_MENU_OV_SCALE_BILINEAR] = "bilinear",
@@ -1644,10 +1689,16 @@ static const char *const text_pt_br[UI_TEXT_COUNT] = {
     [UI_MENU_PCSS] = "Sombras suaves",
     [UI_MENU_PCSS_DESC] = "Sombras do sol nítidas onde um objeto toca o chão e mais suaves quanto mais longe a sombra "
                           "cai (PCSS). 0 mantém o filtro do jogo. Vale no próximo início.",
-    [UI_MENU_DLAA] = "NVIDIA DLSS / DLAA",
-    [UI_MENU_DLAA_DESC] = "NVIDIA DLSS para a cena 3D (placas NVIDIA RTX; nvngx_dlss.dll ao lado do totk.exe): bordas "
-                          "mais suaves e menos cintilação. O HUD não é afetado. O modo abaixo define a resolução de "
-                          "onde ele parte. Vale após reiniciar.",
+    [UI_MENU_DLAA] = "Upscalers",
+    [UI_MENU_DLAA_DESC] = "O que suaviza e amplia a cena 3D. NVIDIA DLSS: placas NVIDIA RTX, nvngx_dlss.dll ao lado do "
+                          "totk.exe. AMD FSR: FSR 4 nas AMD Radeon RX 9000, 7000 e 6000, FSR 3.1 nas outras placas que a "
+                          "biblioteca da AMD suporta (Windows; amd_fidelityfx_loader_vk.dll e "
+                          "amd_fidelityfx_upscaler_vk.dll ao lado do "
+                          "totk.exe); com ele o FXAA do jogo e a resolução dinâmica ficam desligados. Bordas mais suaves "
+                          "e menos cintilação; o HUD não é afetado. O modo abaixo define a resolução de onde ele parte. "
+                          "Vale após reiniciar.",
+    [UI_MENU_DLAA_OFF] = "Desligado",
+    [UI_MENU_DLAA_BACKEND_DLSS] = "NVIDIA DLSS", [UI_MENU_DLAA_BACKEND_FSR] = "AMD FSR",
     [UI_MENU_DLSS] = "Modo do DLSS",
     [UI_MENU_DLSS_DESC] = "DLAA desenha a cena 3D na resolução cheia. Qualidade, Equilibrado, Desempenho e Ultra "
                           "Desempenho a desenham em 67, 58, 50 e 33 % e deixam o DLSS ampliá-la, o que poupa tempo da "
@@ -1663,15 +1714,14 @@ static const char *const text_pt_br[UI_TEXT_COUNT] = {
                                  "o modelo mais nítido em todos os modos. Vale na hora.",
     [UI_MENU_DLSS_PRESET_DEFAULT] = "Automático", [UI_MENU_DLSS_PRESET_K] = "K (mais nítido)",
     [UI_MENU_DLSS_PRESET_J] = "J (menos rastro)",
-    [UI_MENU_DLSS_CHARS] = "Rastros de personagens no DLSS",
+    [UI_MENU_DLSS_CHARS] = "Rastros de personagens",
     [UI_MENU_DLSS_CHARS_DESC] = "Reduz os rastros fracos atrás de personagens, animais e do que eles seguram em movimento: "
-                                "ali o DLSS usa menos dos quadros anteriores. Mais forte remove mais rastros e deixa essas "
+                                "ali o upscaler (DLSS ou FSR) usa menos dos quadros anteriores. Mais forte remove mais rastros e deixa essas "
                                 "bordas um pouco menos suaves. Vale na hora.",
     [UI_MENU_DLSS_CHARS_OFF] = "Desligado", [UI_MENU_DLSS_CHARS_LIGHT] = "Leve", [UI_MENU_DLSS_CHARS_MEDIUM] = "Médio",
     [UI_MENU_DLSS_CHARS_FULL] = "Total",
     [UI_MENU_FXAA] = "Antisserrilhado do jogo (FXAA)",
-    [UI_MENU_FXAA_DESC] = "A suavização de bordas FXAA do próprio jogo. Borra um pouco os detalhes finos; com o DLAA "
-                          "ligado não é necessária.",
+    [UI_MENU_FXAA_DESC] = "A suavização de bordas FXAA do próprio jogo. Borra um pouco os detalhes finos; com o DLAA ligado não é necessária. Desligado enquanto o AMD FSR está ativo.",
     [UI_MENU_REFLEX] = "NVIDIA Reflex Low Latency",
     [UI_MENU_REFLEX_DESC] = "Reduz a latência do sistema em GPUs NVIDIA usando VK_NV_low_latency2. Ligado + Boost mantém os clocks da GPU altos quando limitado pela CPU.",
     [UI_MENU_REFLEX_OFF] = "Desligado",
@@ -1798,7 +1848,7 @@ static const char *const text_zh_hans[UI_TEXT_COUNT] = {
                                   "高于 100% 会平滑锯齿边缘（超采样），但 GPU 开销很高。",
     [UI_MENU_RENDER_SCALE_GAME] = "游戏（83%）",
     [UI_MENU_DYNAMIC_RES] = "动态分辨率",
-    [UI_MENU_DYNAMIC_RES_DESC] = "让游戏把 3D 场景降到 90 % 或 80 %。它依据为 Switch 制定的估算，不考虑你的显卡，因此即使在高性能 PC 上宽场景也会降低。关闭时保持渲染比例。",
+    [UI_MENU_DYNAMIC_RES_DESC] = "让游戏把 3D 场景降到 90 % 或 80 %。它依据为 Switch 制定的估算，不考虑你的显卡，因此即使在高性能 PC 上宽场景也会降低。关闭时保持渲染比例。AMD FSR 启用时关闭。",
     [UI_MENU_UPSCALER] = "放大到窗口",
     [UI_MENU_UPSCALER_DESC] = "窗口大于游戏分辨率时画面的放大方式。"
                               "FSR 比双线性更能保留边缘和细节。",
@@ -1821,7 +1871,7 @@ static const char *const text_zh_hans[UI_TEXT_COUNT] = {
     [UI_MENU_FOV_DESC] = "镜头能看到多大范围，以游戏自身视野的百分比表示。"
                           "支持游戏版本 1.1.0 和 1.4.3。",
     [UI_MENU_SHARPNESS] = "FSR 锐度",
-    [UI_MENU_SHARPNESS_DESC] = "FSR 缩放后的锐化强度；0 为关闭。",
+    [UI_MENU_SHARPNESS_DESC] = "AMD FSR 的锐化强度：使用 AMD FSR 超分辨率时作用于 3D 场景，FSR 1 放大到窗口时作用于画面。0 为关闭。",
     [UI_MENU_COLOR] = "色彩",
     [UI_MENU_COLOR_PRESET] = "色彩配置",
     [UI_MENU_COLOR_PRESET_DESC] = "同时设置下面四项。鲜艳：对比度和饱和度更高，暗部略微提亮（为 OLED 屏幕调校）。"
@@ -1890,6 +1940,14 @@ static const char *const text_zh_hans[UI_TEXT_COUNT] = {
     [UI_MENU_AUDIO_DEVICE_DEFAULT] = "系统默认",
     [UI_MENU_MOTION] = "体感操作",
     [UI_MENU_MOTION_DESC] = "用手柄的陀螺仪瞄准。",
+    [UI_MENU_GYRO_CALIBRATION] = "陀螺仪偏置校准",
+    [UI_MENU_GYRO_CALIBRATION_DESC] = "减去下面校准行测得的手柄静止偏移。关闭时测量值仍然保留。",
+    [UI_MENU_GYRO_CALIBRATE] = "校准陀螺仪",
+    [UI_MENU_GYRO_CALIBRATE_DESC] = "测量并消除陀螺仪的静止偏移。请放下手柄或保持静止两秒。",
+    [UI_MENU_GYRO_CALIBRATE_WAIT] = "校准中...",
+    [UI_MENU_GYRO_CALIBRATED] = "%s，已校准",
+    [UI_MENU_GYRO_CALIBRATE_FAILED] = "校准失败",
+    [UI_MENU_GYRO_CALIBRATE_MOVED] = "手柄移动了：请保持静止后重试",
     [UI_MENU_RUMBLE_STRENGTH] = "振动强度",
     [UI_MENU_RUMBLE_STRENGTH_DESC] = "手柄振动的强弱。",
     [UI_MENU_RUMBLE_CURVE] = "振动曲线",
@@ -2212,6 +2270,7 @@ static const char *const text_zh_hans[UI_TEXT_COUNT] = {
     [UI_MENU_OV_WINDOW] = "窗口",
     [UI_MENU_OV_OUTPUT] = "游戏画面",
     [UI_MENU_OV_SCENE] = "3D 场景",
+    [UI_MENU_OV_UPSCALER] = "超分辨率",
     [UI_MENU_OV_SCALING] = "缩放",
     [UI_MENU_OV_LIMIT] = "帧率上限",
     [UI_MENU_OV_PRESENT] = "呈现模式",
@@ -2323,9 +2382,13 @@ static const char *const text_zh_hans[UI_TEXT_COUNT] = {
     [UI_MENU_CONTACT_SHADOWS_DESC] = "阴影贴图遗漏的细小太阳阴影：脚下、石头下、草丛和褶皱中。在光照之后于屏幕空间追踪。下次启动时生效。",
     [UI_MENU_PCSS] = "柔和阴影",
     [UI_MENU_PCSS_DESC] = "物体接触地面处的太阳阴影锐利，阴影投得越远越柔和（PCSS）。0 保留游戏自身的过滤。下次启动时生效。",
-    [UI_MENU_DLAA] = "NVIDIA DLSS / DLAA",
-    [UI_MENU_DLAA_DESC] = "用于 3D 场景的 NVIDIA DLSS（NVIDIA RTX 显卡；nvngx_dlss.dll 放在 totk.exe 旁）：边缘更平滑，闪烁更少。HUD "
-                          "不受影响。下方的模式决定它的工作分辨率。重启后生效。",
+    [UI_MENU_DLAA] = "超分辨率技术",
+    [UI_MENU_DLAA_DESC] = "平滑并放大 3D 场景的技术。NVIDIA DLSS：NVIDIA RTX 显卡，nvngx_dlss.dll 放在 totk.exe 旁。AMD FSR：AMD Radeon "
+                          "RX 9000、7000 和 6000 系列为 FSR 4，AMD 库支持的其他显卡为 FSR 3.1（Windows；amd_fidelityfx_loader_vk.dll 和 "
+                          "amd_fidelityfx_upscaler_vk.dll 放在 totk.exe 旁）；使用它时游戏的 FXAA 和动态分辨率关闭。边缘更平滑，"
+                          "闪烁更少；HUD 不受影响。下方的模式决定它的工作分辨率。重启后生效。",
+    [UI_MENU_DLAA_OFF] = "关",
+    [UI_MENU_DLAA_BACKEND_DLSS] = "NVIDIA DLSS", [UI_MENU_DLAA_BACKEND_FSR] = "AMD FSR",
     [UI_MENU_DLSS] = "DLSS 模式",
     [UI_MENU_DLSS_DESC] = "DLAA 以全分辨率绘制 3D 场景。质量、平衡、性能和超级性能分别以 67%、58%、50% 和 33% 绘制，再由 DLSS 放大，以节省 GPU 时间；它们会取代 3D 渲染比例。立即生效。",
     [UI_MENU_DLSS_DLAA] = "DLAA（原生）",
@@ -2338,13 +2401,13 @@ static const char *const text_zh_hans[UI_TEXT_COUNT] = {
                                  "J：移动角色身后的拖影略少，闪烁略多。K：所有模式都用最清晰的模型。立即生效。",
     [UI_MENU_DLSS_PRESET_DEFAULT] = "自动", [UI_MENU_DLSS_PRESET_K] = "K（最清晰）",
     [UI_MENU_DLSS_PRESET_J] = "J（拖影更少）",
-    [UI_MENU_DLSS_CHARS] = "DLSS 角色拖影",
-    [UI_MENU_DLSS_CHARS_DESC] = "减少移动中的角色、动物及其手持物品身后的淡淡拖影：DLSS 在这些位置少用之前的帧。越强拖影越少，"
+    [UI_MENU_DLSS_CHARS] = "角色拖影",
+    [UI_MENU_DLSS_CHARS_DESC] = "减少移动中的角色、动物及其手持物品身后的淡淡拖影：超分辨率技术（DLSS 或 FSR）在这些位置少用之前的帧。越强拖影越少，"
                                 "这些边缘也略欠平滑。立即生效。",
     [UI_MENU_DLSS_CHARS_OFF] = "关", [UI_MENU_DLSS_CHARS_LIGHT] = "弱", [UI_MENU_DLSS_CHARS_MEDIUM] = "中",
     [UI_MENU_DLSS_CHARS_FULL] = "强",
     [UI_MENU_FXAA] = "游戏抗锯齿（FXAA）",
-    [UI_MENU_FXAA_DESC] = "游戏自身的 FXAA 边缘平滑。会让细节略微模糊；开启 DLAA 时不需要。",
+    [UI_MENU_FXAA_DESC] = "游戏自身的 FXAA 边缘平滑。会让细节略微模糊；开启 DLAA 时不需要。AMD FSR 开启时关闭。",
     [UI_MENU_REFLEX] = "NVIDIA Reflex 低延迟",
     [UI_MENU_REFLEX_DESC] = "在支持 VK_NV_low_latency2 的 NVIDIA 显卡上降低系统延迟。开 + 增强 (On + Boost) 会在 CPU 瓶颈时保持 GPU 高频率。",
     [UI_MENU_REFLEX_OFF] = "关",

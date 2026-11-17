@@ -61,6 +61,7 @@ typedef struct {
     int amd_sc;                        // AMD's Windows driver branch for RDNA 1 and 2 ("AMD proprietary shader compiler")
     int mesa;                          // a Mesa driver the game runs on: RADV, ANV or NVK
     int intel_igpu_win;                // Intel's Windows driver on an integrated GPU (UHD, Iris Xe, Core Ultra graphics)
+    int demote;                        // shaderDemoteToHelperInvocation enabled: modules may use OpDemoteToHelperInvocation
 } VkCaps;
 extern VkCaps vk_caps;
 void vk_caps_driver(VkPhysicalDevice p);             // first, before vkCreateDevice: vk_caps.amd, amd_sc, mesa, intel_igpu_win
@@ -424,6 +425,9 @@ int vk_mem_span_live(const VkMemSpan *sp);
 // from then on are freed once the timeline reaches it.
 void vk_mem_note_fence(uint64_t timeline_value);
 void vk_mem_fault_log(void);   // vk_device_fault_report: the deferred-free state, lock-free
+// vk_device_fault_report: the last descriptor pool events (vk_exec_draw.c journal: CbRes made, pools handed out and
+// reset), lock-free.
+void vk_exec_pool_journal_log(void);
 void vk_mem_collect(void);                         // frees what has completed
 // After a failed allocation, on a thread that may hold the texture lock and the upload lock (cmd_lock) but no VMA
 // lock: frees the headroom blocks and the completed upload batches and deferred objects, and requests the release
